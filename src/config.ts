@@ -3,22 +3,22 @@ import { regionStyle } from "./typings"
 export const DEFAULT_REGION_STYLES: regionStyle[] = [
   {
     label: '',
-    color: '#9DC3E225'
+    color: '#D8E4FE25'
   },
   {
     label: '',
-    color: '#47CACC25'
+    color: '#CCFAB425'
   },
   {
     label: '',
-    color: '#EBAEFC25'
+    color: '#9CE2FE25'
   },
   {
     label: '',
-    color: '#E7B7C825'
+    color: '#FCF79D25'
   },
   {
     label: '',
-    color: '#F8F4B025'
+    color: '#FFD4BD25'
   }
 ]
