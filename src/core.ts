@@ -1,9 +1,9 @@
 import * as vscode from 'vscode'
 import {
  positionStack, position, decoratePosition 
-} from '../typings'
-import { DEFAULT_REGION_STYLES } from '../configs'
-import { getRegionStyleColor } from '../utils'
+} from './typings'
+import { DEFAULT_REGION_STYLES } from './config'
+import { getRegionStyleColor, getLanguageRegionRegExp } from './util'
 
 let regionStyles: vscode.TextEditorDecorationType[] = []
 
@@ -11,12 +11,10 @@ let regionStyles: vscode.TextEditorDecorationType[] = []
  * get the region array of successful matches,
  * and convert into a interface<position> data structure
  */
-function getMatchedRegions(document: vscode.TextDocument): position[] {
-  const regexpRegion = /(\/\/\s*#region.*)|(\/\/\s*#endregion.*)/g
-  const matchResult = document.getText().matchAll(regexpRegion)
-
+function getMatchedRegions(document: vscode.TextDocument, regexp: RegExp): position[] {
+  const matchResult = document.getText().matchAll(regexp)
   let positionStacks = [...matchResult].reduce((prev: positionStack[], next: RegExpMatchArray) => {
-    if (next[0].includes('#region')) {
+    if (next[0].includes(next[1])) {
       prev.push({
         startPos: document.positionAt(next.index as number),
         endPos: null
@@ -43,7 +41,7 @@ function getMatchedRegions(document: vscode.TextDocument): position[] {
  */
 function getDecoratedRegions(positions: position[]) {
   return positions.reduce((prev: decoratePosition[], next: position, index: number) => {
-    const regionStyle =  vscode.window.createTextEditorDecorationType({
+    const regionStyle = vscode.window.createTextEditorDecorationType({
       isWholeLine: true,
       backgroundColor: getRegionStyleColor(DEFAULT_REGION_STYLES, index)
     })
@@ -69,7 +67,10 @@ export function syncTriggerDecorationRegion(editor?: vscode.TextEditor) {
   resetDecorations()
 
   const { document } = editor
-  const regionPositions = getMatchedRegions(document)
+  const languageRegExp = getLanguageRegionRegExp(document.languageId)
+
+  if (!languageRegExp) return
+  const regionPositions = getMatchedRegions(document, languageRegExp)
   
   if (regionPositions.length !== 0) {
     const regionDecorates = getDecoratedRegions(regionPositions)

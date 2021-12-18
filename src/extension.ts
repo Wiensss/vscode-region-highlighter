@@ -12,4 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.workspace.onDidChangeTextDocument(() => {
     syncTriggerDecorationRegion(vscode.window.activeTextEditor)
   }, null, context.subscriptions)
+
+  vscode.workspace.onDidOpenTextDocument(() => {
+    syncTriggerDecorationRegion(vscode.window.activeTextEditor)
+  }, null, context.subscriptions)
 }

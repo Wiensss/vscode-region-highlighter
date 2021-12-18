@@ -1,4 +1,4 @@
-import { regionStyle } from "../typings"
+import { regionStyle } from "./typings"
 
 export const DEFAULT_REGION_STYLES: regionStyle[] = [
   {
