@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import {
- positionStack, position, decoratePosition 
+ positionStack, position, decoratePosition
 } from './typings'
 import { DEFAULT_REGION_STYLES } from './config'
 import { getRegionStyleColor, getLanguageRegionRegExp } from './util'
@@ -14,7 +14,7 @@ let regionStyles: vscode.TextEditorDecorationType[] = []
 function getMatchedRegions(document: vscode.TextDocument, regexp: RegExp): position[] {
   const matchResult = document.getText().matchAll(regexp)
   let positionStacks = [...matchResult].reduce((prev: positionStack[], next: RegExpMatchArray) => {
-    if (next[0].includes(next[1])) {
+    if (next[0].includes(next[1]) || next[0].includes(next[2])) {
       prev.push({
         startPos: document.positionAt(next.index as number),
         endPos: null
@@ -53,6 +53,9 @@ function getDecoratedRegions(positions: position[]) {
   }, [])
 }
 
+/**
+ * reset previous render decoration
+ */
 function resetDecorations() {
   regionStyles.forEach((item: vscode.TextEditorDecorationType) => {
     item.dispose()

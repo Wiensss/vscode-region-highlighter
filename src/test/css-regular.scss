@@ -1,0 +1,29 @@
+// # expression = /^[ ]*(?:(\/\*\s*#region\s*\*\/|\/\/\s*#region\s*\/\/)|\/\*\s*#endregion\s*\*\/|\/\/\s*#endregion\s*\/\/)(?:[^0-9a-zA-Z\n].*)*$/mg
+
+true
+/* #region-d */
+/* #endregion */
+
+true
+/* #region-d */
+// #endregion
+
+true
+/* #region s */
+// #endregion
+
+true
+/* #region 中文 */
+// #endregion
+
+true
+// #region
+// #endregion
+
+false
+/*region*/
+/*#endregion*/
+
+false
+/*#regions*/
+/*#endregion*/
