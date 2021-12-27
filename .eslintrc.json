@@ -51,33 +51,6 @@
       {
         "minItems": 3
       }
-    ],
-    "array-bracket-newline": [
-      "error",
-      {
-        "multiline": true
-      }
-    ],
-    "object-property-newline": [
-      "error",
-      {
-        "allowAllPropertiesOnSameLine": false
-      }
-    ],
-    "object-curly-newline": [
-      "error",
-      {
-        "ObjectExpression": {
-          "minProperties": 2
-        },
-        "ImportDeclaration": {
-          "minProperties": 3
-        },
-        "ExportDeclaration": {
-          "multiline": true,
-          "minProperties": 3
-        }
-      }
     ]
   },
   "ignorePatterns": [

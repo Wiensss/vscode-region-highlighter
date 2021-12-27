@@ -15,17 +15,76 @@
 	"main": "./out/extension.js",
   "contributes": {
     "configuration": {
-        "type": "object",
-        "title": "Regions with Colors configuration",
-        "properties": {
-            "regionHighlighter.color": {
-                "type": "string",
-                "default": "rgba(238, 72, 102, 0.2)",
-                "description": "Color used to colorize regions"
-            }
-        } 
+      "title": "Region Highlighter",
+      "properties": {
+        "regionHighlighter.ignoreFlag": {
+          "type": "string",
+          "default": "!",
+          "description": "Does not decorate current region when the first character outside the region marker matches the flag."
+        },
+        "regionHighlighter.triggerDelay": {
+          "type": "number",
+          "default": 500,
+          "description": "Controls the delay in ms after which a dirty editor is changed."
+        },
+        "regionHighlighter.allowLanguageIDs": {
+          "type": "string",
+          "default": "javascript",
+          "markdownDescription": "IDs which this extension will work on. Identifiers have to be separated by a comma. eg: `javascript,typescript`"
+        },
+        "regionHighlighter.defaultColor": {
+          "type": "string",
+          "default": "#C9C4E930",
+          "markdownDescription": "Default region backgroundColor in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`"
+        },
+        "regionHighlighter.decorationStyle": {
+          "type": "enum",
+          "default": "background",
+          "enum": ["border", "background"],
+          "description": "Default decoration region style."
+        },
+        "regionHighlighter.borderWidth": {
+          "type": "string",
+          "default": "1px",
+          "markdownDescription": "Decorative region border width. Only applies when `#regionHighlighter.decorationStyle#` is set to `border`."
+        },
+        "regionHighlighter.borderStyle": {
+          "type": "enum",
+          "default": "solid",
+          "enum": ["solid", "dashed", "dotted", "double", "groove"],
+          "markdownDescription": "Decorative region border style. Only applies when `#regionHighlighter.decorationStyle#` is set to `border`."
+        },
+        "regionHighlighter.defaultTheme": {
+          "type": "enum",
+          "default": "Sunny",
+          "enum": ["Rainbow", "Sunny", "Cloudy", "Custom Theme", "Default Color"],
+          "description": "Default region backgroundColor theme",
+          "enumDescriptions": [
+            "Built-in theme Rainbow",
+            "Built-in theme Sunny",
+            "Built-in theme Cloudy",
+            "Using custom theme",
+            "Using default color to decorated the same color"
+          ]
+        },
+        "regionHighlighter.customTheme": {
+          "type": "array",
+          "markdownDescription": "Only applies when `regionHighlighter.defaultTHeme` is set to `Custom Theme`. It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`, the label property will be available for customizing the introverted region color."
+        },
+        "regionHighlighter.extraColorStrategy": {
+          "type": "enum",
+          "default": "Custom Theme First Color",
+          "enum": ["Default Color", "Custom Theme First Color", "Custom Theme Last Color"],
+          "enumDescriptions": [
+            "Using default color to decorated overflow regions",
+            "Using custom theme first color to decorated overflow regions",
+            "Using custom theme last color to decorated overflow regions"
+          ],
+          "description": "The decoration strategy chosen when the length of region blocks in the editor exceeds the preset color length."
+        }
+      }
     }
-},
+  },
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
