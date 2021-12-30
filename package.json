@@ -1,22 +1,76 @@
 {
   "name": "region-highlighter",
-	"displayName": "Region Highlighter",
-	"description": "decorates code inbetween regions, supoprt for custom color configurations and styles.",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.63.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
+  "displayName": "Region Highlighter",
+  "description": "decorates code inbetween regions, supoprt for custom color configurations and styles.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
     "*"
-	],
-	"main": "./out/extension.js",
+  ],
+  "main": "./out/extension.js",
   "contributes": {
     "configuration": {
       "title": "Region Highlighter",
       "properties": {
+        "regionHighlighter.borderWidth": {
+          "type": "string",
+          "default": "1px",
+          "markdownDescription": "Decorative region border width. Only applies when `#regionHighlighter.decorationStyle#` is set to `border`."
+        },
+        "regionHighlighter.borderStyle": {
+          "type": "string",
+          "default": "solid",
+          "enum": [
+            "solid",
+            "dashed",
+            "dotted",
+            "double",
+            "groove"
+          ],
+          "markdownDescription": "Decorative region border style. Only applies when `#regionHighlighter.decorationStyle#` is set to `border`."
+        },
+        "regionHighlighter.defaultColor": {
+          "type": "string",
+          "default": "#C9C4E930",
+          "markdownDescription": "Default region backgroundColor in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`"
+        },
+        "regionHighlighter.decorationStyle": {
+          "type": "string",
+          "default": "background",
+          "enum": [
+            "border",
+            "background"
+          ],
+          "description": "Default decoration region style."
+        },
+        "regionHighlighter.defaultTheme": {
+          "type": "string",
+          "default": "Rainbow",
+          "enum": [
+            "Rainbow",
+            "Day3024",
+            "Morandi",
+            "Custom Theme",
+            "Default Color"
+          ],
+          "description": "Default region backgroundColor theme",
+          "enumDescriptions": [
+            "Built-in theme Rainbow",
+            "Built-in theme Day3024",
+            "Built-in theme Morandi",
+            "Using custom theme",
+            "Using default color to decorated the same color"
+          ]
+        },
+        "regionHighlighter.customTheme": {
+          "type": "array",
+          "markdownDescription": "Only applies when `#regionHighlighter.defaultTheme` is set to `Custom Theme`. It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`, the label property will be available for customizing the introverted region color."
+        },
         "regionHighlighter.ignoreFlag": {
           "type": "string",
           "default": "!",
@@ -29,52 +83,17 @@
         },
         "regionHighlighter.allowLanguageIDs": {
           "type": "string",
-          "default": "javascript",
-          "markdownDescription": "IDs which this extension will work on. Identifiers have to be separated by a comma. eg: `javascript,typescript`"
-        },
-        "regionHighlighter.defaultColor": {
-          "type": "string",
-          "default": "#C9C4E930",
-          "markdownDescription": "Default region backgroundColor in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`"
-        },
-        "regionHighlighter.decorationStyle": {
-          "type": "enum",
-          "default": "background",
-          "enum": ["border", "background"],
-          "description": "Default decoration region style."
-        },
-        "regionHighlighter.borderWidth": {
-          "type": "string",
-          "default": "1px",
-          "markdownDescription": "Decorative region border width. Only applies when `#regionHighlighter.decorationStyle#` is set to `border`."
-        },
-        "regionHighlighter.borderStyle": {
-          "type": "enum",
-          "default": "solid",
-          "enum": ["solid", "dashed", "dotted", "double", "groove"],
-          "markdownDescription": "Decorative region border style. Only applies when `#regionHighlighter.decorationStyle#` is set to `border`."
-        },
-        "regionHighlighter.defaultTheme": {
-          "type": "enum",
-          "default": "Rainbow",
-          "enum": ["Rainbow", "Day3024", "Morandi", "Custom Theme", "Default Color"],
-          "description": "Default region backgroundColor theme",
-          "enumDescriptions": [
-            "Built-in theme Rainbow",
-            "Built-in theme Day3024",
-            "Built-in theme Morandi",
-            "Using custom theme",
-            "Using default color to decorated the same color"
-          ]
-        },
-        "regionHighlighter.customTheme": {
-          "type": "array",
-          "markdownDescription": "Only applies when `regionHighlighter.defaultTHeme` is set to `Custom Theme`. It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`, the label property will be available for customizing the introverted region color."
+          "default": "*",
+          "markdownDescription": "IDs which this extension will work on. Identifiers have to be separated by a comma. `*` means that all the languages. eg: `javascript,typescript`"
         },
         "regionHighlighter.extraColorStrategy": {
-          "type": "enum",
+          "type": "string",
           "default": "Custom Theme First Color",
-          "enum": ["Default Color", "Custom Theme First Color", "Custom Theme Last Color"],
+          "enum": [
+            "Default Color",
+            "Custom Theme First Color",
+            "Custom Theme Last Color"
+          ],
           "enumDescriptions": [
             "Using default color to decorated overflow regions",
             "Using custom theme first color to decorated overflow regions",
@@ -85,25 +104,25 @@
       }
     }
   },
-	"scripts": {
-		"vscode:prepublish": "yarn run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "yarn run compile && yarn run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/vscode": "^1.63.0",
-		"@types/glob": "^7.1.4",
-		"@types/mocha": "^9.0.0",
-		"@types/node": "14.x",
-		"@typescript-eslint/eslint-plugin": "^5.1.0",
-		"@typescript-eslint/parser": "^5.1.0",
-		"eslint": "^8.1.0",
-		"glob": "^7.1.7",
-		"mocha": "^9.1.3",
-		"typescript": "^4.4.4",
-		"@vscode/test-electron": "^1.6.2"
-	}
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.63.0",
+    "@types/glob": "^7.1.4",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "14.x",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "eslint": "^8.1.0",
+    "glob": "^7.1.7",
+    "mocha": "^9.1.3",
+    "typescript": "^4.4.4",
+    "@vscode/test-electron": "^1.6.2"
+  }
 }

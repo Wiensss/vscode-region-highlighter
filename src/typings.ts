@@ -15,8 +15,8 @@ export enum EnumContributes {
 }
 
 export enum EnumDecorationStyle {
-  BORDER = 'borderColor',
-  BACKGROUND = 'backgroundColor',
+  BORDER = 'border',
+  BACKGROUND = 'background',
 }
 
 export enum EnumBorderStyle {

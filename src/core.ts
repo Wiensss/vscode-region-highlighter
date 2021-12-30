@@ -17,7 +17,7 @@ let regionStyles: vscode.TextEditorDecorationType[] = []
   language: vscode.TextDocument['languageId']) {
  let expression: RegExp | null
  const allowLanguageIDs = (config.get(EnumContributes.ALLOW_LANGUAGE_IDS) as string).split(',')
- const isEmptyMatchLanguages = !allowLanguageIDs.includes(language)
+ const isEmptyMatchLanguages = allowLanguageIDs.indexOf('*') === -1 && !allowLanguageIDs.includes(language)
 
  if (allowLanguageIDs.length && isEmptyMatchLanguages) return null
 
@@ -198,7 +198,7 @@ export function syncTriggerDecorationRegion(editor?: vscode.TextEditor) {
   resetDecorations()
 
   const { document } = editor
-  const configurations = vscode.workspace.getConfiguration('regionHighlighter')
+  const configurations = vscode.workspace.getConfiguration(EnumContributes.PLUGIN_PREFIX)
 
   const languageRegExp = getLanguageRegionRegExp(configurations, document.languageId)
   if (!languageRegExp) return

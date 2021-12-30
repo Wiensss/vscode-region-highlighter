@@ -17,16 +17,6 @@ export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
   })
 }
 
-
-export function getColorStrategyIndex(
-  index: number,
-  lastIndex: number,
-  extraStrategy: EnumExtraColorStrategy,
-  defaultColor: string
-) {
-
-}
-
 /**
  * get the regionStyle.color according to index param,
  * if index param exceeds the regionStyle length,
@@ -54,7 +44,7 @@ export function getColorStrategyIndex(
       result = defaultColor
       break
     case EnumExtraColorStrategy.CUSTOM_THEME_FIRST_COLOR:
-      result = colors[index]?.color ?? ''
+      result = colors[0]?.color ?? ''
       break
     case EnumExtraColorStrategy.CUSTOM_THEME_LAST_COLOR:
       result = colors[lastIndex]?.color ?? ''
