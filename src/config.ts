@@ -1,70 +1,86 @@
 import { EnumDefaultTheme, regionStyle } from "./typings"
 
+/**
+ * rgba opacity:
+ * - 0.05 = 0D
+ * - 0.10 = 1A
+ * - 0.15 = 26
+ * - 0.20 = 33
+ */
+
 export const DEFAULT_THEMES = {
   [EnumDefaultTheme.RAINBOW]: [
     {
-      label: '',
-      color: '#DEE0E625'
+      label: 'red',
+      color: '#ff00001A'
     },
     {
-      label: '',
-      color: '#1DDBE225'
+      label: 'orange',
+      color: '#FF45001A'
     },
     {
-      label: '',
-      color: '#FF93AD25'
+      label: 'yellow',
+      color: '#FFFF0026'
     },
     {
-      label: '',
-      color: '#FFC77025'
+      label: 'green',
+      color: '#90EE9026'
     },
     {
-      label: '',
-      color: '#8785EF25'
+      label: 'blue',
+      color: '#0000FF0D'
+    },
+    {
+      label: 'purple',
+      color: '#8000801A'
     }
   ],
-  [EnumDefaultTheme.SUNNY]: [
+  [EnumDefaultTheme.DAY3024]: [
     {
       label: '',
-      color: '#FF806625'
+      color: '#C8E6F533'
     },
     {
       label: '',
-      color: '#0085FF25'
+      color: '#AA82A033'
     },
     {
       label: '',
-      color: '#FF000A25'
+      color: '#51AFE233'
     },
     {
       label: '',
-      color: '#4E839725'
+      color: '#FAEB5A33'
     },
     {
       label: '',
-      color: '#FFE6D925'
+      color: '#4DA96D33'
+    },
+    {
+      label: '',
+      color: '#D0504533'
     }
   ],
-  [EnumDefaultTheme.CLOUDY]: [
+  [EnumDefaultTheme.MORANDI]: [
     {
       label: '',
-      color: '#E5E2F525'
+      color: '#B7B1A526'
     },
     {
       label: '',
-      color: '#68EBFE25'
+      color: '#D8CAAF26'
     },
     {
       label: '',
-      color: '#FF93AD25'
+      color: '#C9C0D326'
     },
     {
       label: '',
-      color: '#53ECC525'
+      color: '#F0A48D26'
     },
     {
       label: '',
-      color: '#8183FF25'
+      color: '#96545426'
     }
   ]
 }

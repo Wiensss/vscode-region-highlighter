@@ -91,7 +91,7 @@ function getDecorationConfig(config: vscode.WorkspaceConfiguration): decorationC
   } else {
     currentTheme = []
   }
-  
+
   return {
     defaultTheme: currentTheme,
     decorationStyle: `${decorationStyle}Color`,
@@ -168,6 +168,7 @@ function getDecoratedRegions(
         ...(decorationConfig?.borderWidth ? { borderWidth: decorationConfig.borderWidth } : {}),
         ...(decorationConfig?.borderStyle ? { borderStyle: decorationConfig.borderStyle } : {})
       })
+
       prev.push({
         style: regionStyle,
         range: [{ range: new vscode.Range(next.startPos, next.endPos) }]

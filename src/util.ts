@@ -45,7 +45,7 @@ export function getColorStrategyIndex(
 
   const lastIndex = colors.length - 1
   if (index <= lastIndex) {
-    return colors[index].color
+    return colors[index]?.color ?? ''
   }
 
   let result = null
@@ -54,10 +54,10 @@ export function getColorStrategyIndex(
       result = defaultColor
       break
     case EnumExtraColorStrategy.CUSTOM_THEME_FIRST_COLOR:
-      result = colors[index].color
+      result = colors[index]?.color ?? ''
       break
     case EnumExtraColorStrategy.CUSTOM_THEME_LAST_COLOR:
-      result = colors[lastIndex].color
+      result = colors[lastIndex]?.color ?? ''
       break
   }
   return result  

@@ -56,13 +56,13 @@
         },
         "regionHighlighter.defaultTheme": {
           "type": "enum",
-          "default": "Sunny",
-          "enum": ["Rainbow", "Sunny", "Cloudy", "Custom Theme", "Default Color"],
+          "default": "Rainbow",
+          "enum": ["Rainbow", "Day3024", "Morandi", "Custom Theme", "Default Color"],
           "description": "Default region backgroundColor theme",
           "enumDescriptions": [
             "Built-in theme Rainbow",
-            "Built-in theme Sunny",
-            "Built-in theme Cloudy",
+            "Built-in theme Day3024",
+            "Built-in theme Morandi",
             "Using custom theme",
             "Using default color to decorated the same color"
           ]
