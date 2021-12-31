@@ -100,7 +100,6 @@ function getDecorationConfig(config: vscode.WorkspaceConfiguration): decorationC
   }
 }
 
-
 /**
  * get the region array of successful matches,
  * and convert into a interface<position> data structure
@@ -191,9 +190,10 @@ function resetDecorations() {
 /**
  * core logic
  */
-export function syncTriggerDecorationRegion(editor?: vscode.TextEditor) {
+export function syncTriggerDecorationRegion() {
+  const editor = vscode.window.activeTextEditor
   if (!editor) return
-  
+
   // aviod region rendering overlap
   resetDecorations()
 

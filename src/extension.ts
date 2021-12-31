@@ -1,19 +1,22 @@
 import * as vscode from 'vscode'
+import throttle from 'lodash.throttle'
 import { syncTriggerDecorationRegion } from './core'
 
 export function activate(context: vscode.ExtensionContext) {
-  // initial trigger decorate region
-  syncTriggerDecorationRegion(vscode.window.activeTextEditor)
+  const throttleCallCoreFunction = throttle(syncTriggerDecorationRegion, 500)
 
-  vscode.window.onDidChangeActiveTextEditor((editor) => {
-    syncTriggerDecorationRegion(editor)
+  // initial trigger decorate region
+  throttleCallCoreFunction()
+
+  vscode.window.onDidChangeActiveTextEditor(() => {
+    throttleCallCoreFunction()
   }, null, context.subscriptions)
 
   vscode.workspace.onDidChangeTextDocument(() => {
-    syncTriggerDecorationRegion(vscode.window.activeTextEditor)
+    throttleCallCoreFunction()
   }, null, context.subscriptions)
 
   vscode.workspace.onDidOpenTextDocument(() => {
-    syncTriggerDecorationRegion(vscode.window.activeTextEditor)
+    throttleCallCoreFunction()
   }, null, context.subscriptions)
 }

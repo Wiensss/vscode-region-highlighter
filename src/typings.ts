@@ -8,7 +8,6 @@ export enum EnumContributes {
   PLUGIN_PREFIX = 'regionHighlighter',
   DEFAULT_COLOR = 'defaultColor',
   DEFAULT_THEME = 'defaultTheme',
-  TRIGGER_DELAY = 'triggerDelay',
   DECORATION_STYLE = 'decorationStyle',
   ALLOW_LANGUAGE_IDS = 'allowLanguageIDs',
   EXTRA_COLOR_STRATEGY = 'extraColorStrategy'

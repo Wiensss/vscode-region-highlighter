@@ -1,8 +1,5 @@
 import { regionStyle, EnumExtraColorStrategy } from "./typings"
 
-/**
- * 
- */
 export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
   if (!theme?.length) return []
 
