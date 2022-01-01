@@ -1,5 +1,10 @@
 import * as vscode from 'vscode'
 
+export enum EnumCommands {
+  MARK = 'mark',
+  UNMARK = 'unmark'
+}
+
 export enum EnumContributes {
   IGNORE_FLAG = 'ignoreFlag',
   BORDER_WIDTH = 'borderWidth',
@@ -70,6 +75,11 @@ export enum EnumLanguage {
   TYPESCRIPT = 'typescript',
   VISUAL_BASIC = 'vb',
   COFFEESCRIPT = 'coffeescript',
+}
+
+export type delimiter = {
+  start: string
+  end: string
 }
 
 export type customTheme = Array<regionStyle | string>
