@@ -1,161 +1,182 @@
-import * as vscode from 'vscode'
+import * as vscode from "vscode"
+import { DEFAULT_THEMES } from "./config"
 import {
- positionStack, position, decoratePosition, regionStyle, decorationConfig,
- EnumLanguage, EnumContributes, EnumDecorationStyle, EnumDefaultTheme, EnumExtraColorStrategy
-} from './typings'
-import { DEFAULT_THEMES } from './config'
-import * as UNIT from './util'
+  position,
+  positionStack,
+  decoratePosition,
+  decorationConfig,
+  regionStyle,
+  EnumLanguage,
+  EnumBorderStyle,
+  EnumContributes,
+  EnumDefaultTheme,
+  EnumDecorationStyle,
+  EnumExtraColorStrategy
+} from "./typings"
+import * as UNIT from "./util"
 
 let regionStyles: vscode.TextEditorDecorationType[] = []
 
-
-/**
- * get the region regular expressions for lanuage param
- */
- function getLanguageRegionRegExp(
+function getLanguageRegExp(
   config: vscode.WorkspaceConfiguration,
-  language: vscode.TextDocument['languageId']) {
- let expression: RegExp | null
- const allowLanguageIDs = (config.get(EnumContributes.ALLOW_LANGUAGE_IDS) as string).split(',')
- const isEmptyMatchLanguages = allowLanguageIDs.indexOf('*') === -1 && !allowLanguageIDs.includes(language)
+  language: vscode.TextDocument["languageId"]
+) {
+  let expression: RegExp | null
 
- if (allowLanguageIDs.length && isEmptyMatchLanguages) return null
+  const allowLanguageIDs = config
+    .get(EnumContributes.ALLOW_LANGUAGE_IDS, "")
+    .split(",")
 
- switch (language) {
-   case EnumLanguage.BAT:
-     expression = /^[ ]*(?:::|REM)\s*(?:(#region)|#endregion).*$/mg
-     break
-   case EnumLanguage.VISUAL_BASIC:
-     expression = /^[ ]*(?:(#Region)|#End Region)(?:[^0-9a-zA-Z\n].*)*$/mg
-     break
-   case EnumLanguage.PYTHON:
-     expression = /^[ ]*(?:(#\s*region)|#\s*endregion)(?:[^0-9a-zA-Z\n].*)*$/mg
-     break
-   case EnumLanguage.PERL:
-     expression = /(?:^[ ]*(#region)(?:[^0-9a-zA-Z\n].*)*$|^(=pod)$)|^[ ]*#endregion(?:[^0-9a-zA-Z\n].*)*$|^=cut$/mg
-     break
-   case EnumLanguage.JAVA:
-     // eslint-disable-next-line max-len
-     expression = /^[ ]*\/\/\s*(?:(#region(?:[^0-9a-zA-Z\n].*)*|<editor-fold>(?:[^\n]*))|#endregion(?:[^0-9a-zA-Z\n].*)*|<\/editor-fold>(?:[^\n]*))$/mg
-     break
-   case EnumLanguage.C:
-   case EnumLanguage.CPP:
-     expression = /^[ ]*(?:(#pragma region)|#pragma endregion)(?:[^0-9a-zA-Z\n].*)*$/mg
-     break
-   case EnumLanguage.HTML:
-   case EnumLanguage.MARKDOWN:
-     expression = /^[ ]*<!--\s*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*-->(?:.*)*$/mg
-     break
-   case EnumLanguage.CSS:
-   case EnumLanguage.LESS:
-   case EnumLanguage.SCSS:
-     // eslint-disable-next-line max-len
-     expression = /^[ ]*(?:\/\*\s*(#region)(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*(#region)(?:[^0-9a-zA-Z\n].*)*|\/\*\s*#endregion(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*#endregion(?:[^0-9a-zA-Z\n].*)*)/mg
-     break
-   case EnumLanguage.PHP:
-   case EnumLanguage.CSHARP:
-   case EnumLanguage.POWERSHELL:
-   case EnumLanguage.COFFEESCRIPT:
-     expression = /^[ ]*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*$/mg
-     break
-   case EnumLanguage.VUE:
-   case EnumLanguage.JREACT:
-   case EnumLanguage.TREACT:
-   case EnumLanguage.FSHARP:
-   case EnumLanguage.JAVASCRIPT:
-   case EnumLanguage.TYPESCRIPT:
-     expression = /^[ ]*\/\/\s*(?:(#region)|#endregion)(?:[ ]+\S*)*$/mg
-     break
-   default:
-     expression = null
- }
+  // '*' flag means match all supported languageIDs
+  const isEmptyLanguageIDs = allowLanguageIDs.indexOf("*") === -1 && !allowLanguageIDs.includes(language)
+  if (allowLanguageIDs.length && isEmptyLanguageIDs) return null
 
- return expression
+  switch (language) {
+    case EnumLanguage.BAT:
+      expression = /^[ ]*(?:::|REM)\s*(?:(#region)|#endregion).*$/gm
+      break
+    case EnumLanguage.VISUAL_BASIC:
+      expression = /^[ ]*(?:(#Region)|#End Region)(?:[^0-9a-zA-Z\n].*)*$/gm
+      break
+    case EnumLanguage.PYTHON:
+      expression =
+        /^[ ]*(?:(#\s*region)|#\s*endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+      break
+    case EnumLanguage.PERL:
+      expression =
+        /(?:^[ ]*(#region)(?:[^0-9a-zA-Z\n].*)*$|^(=pod)$)|^[ ]*#endregion(?:[^0-9a-zA-Z\n].*)*$|^=cut$/gm
+      break
+    case EnumLanguage.JAVA:
+      expression =
+        // eslint-disable-next-line max-len
+        /^[ ]*\/\/\s*(?:(#region(?:[^0-9a-zA-Z\n].*)*|<editor-fold>(?:[^\n]*))|#endregion(?:[^0-9a-zA-Z\n].*)*|<\/editor-fold>(?:[^\n]*))$/gm
+      break
+    case EnumLanguage.C:
+    case EnumLanguage.CPP:
+      expression =
+        /^[ ]*(?:(#pragma region)|#pragma endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+      break
+    case EnumLanguage.HTML:
+    case EnumLanguage.MARKDOWN:
+      expression =
+        /^[ ]*<!--\s*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*-->(?:.*)*$/gm
+      break
+    case EnumLanguage.CSS:
+    case EnumLanguage.LESS:
+    case EnumLanguage.SCSS:
+      expression =
+        // eslint-disable-next-line max-len
+        /^[ ]*(?:\/\*\s*(#region)(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*(#region)(?:[^0-9a-zA-Z\n].*)*|\/\*\s*#endregion(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*#endregion(?:[^0-9a-zA-Z\n].*)*)/gm
+      break
+    case EnumLanguage.PHP:
+    case EnumLanguage.CSHARP:
+    case EnumLanguage.POWERSHELL:
+    case EnumLanguage.COFFEESCRIPT:
+      expression = /^[ ]*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+      break
+    case EnumLanguage.VUE:
+    case EnumLanguage.JREACT:
+    case EnumLanguage.TREACT:
+    case EnumLanguage.FSHARP:
+    case EnumLanguage.JAVASCRIPT:
+    case EnumLanguage.TYPESCRIPT:
+      expression = /^[ ]*\/\/\s*(?:(#region)|#endregion)(?:[ ]+\S*)*$/gm
+      break
+    default:
+      expression = null
+  }
+
+  return expression
 }
 
-/**
- * get the region decoration config
- */
+function getRegionPositions(
+  config: vscode.WorkspaceConfiguration,
+  document: vscode.TextDocument,
+  regexp: RegExp
+) {
+  const matchResult = document.getText().matchAll(regexp)
+
+  let positionStacks = [...matchResult].reduce(
+    (result: positionStack[], item: RegExpMatchArray) => {
+      // get the match group index of regexp match array
+      const matchIndex = item[0].includes(item[1])
+        ? 1
+        : item[0].includes(item[2]) ? 2 : 0
+
+      if (matchIndex) {
+        // get the match substring of start at the matchIndex string end index,
+        // to check whether startat ignore flag
+        const matchString = item[0]
+          .slice(item[0].indexOf(item[matchIndex]) + item[matchIndex].length)
+          .trim()
+
+        result.push({
+          isIgnore: matchString.startsWith(config.get(EnumContributes.IGNORE_FLAG, '')),
+          startPos: document.positionAt(item.index as number),
+          endPos: null
+        })
+      } else {
+        const lastMatchPositionIndex = result
+          .reverse()
+          .findIndex((x) => !x.endPos)
+
+        if (lastMatchPositionIndex !== -1) {
+          result[lastMatchPositionIndex] = {
+            ...result[lastMatchPositionIndex],
+            endPos: document.positionAt(item.index as number)
+          }
+        }
+      }
+
+      return result
+    }, [] as positionStack[])
+
+  return positionStacks
+    .filter((x: positionStack) => x.endPos)
+    .sort((a, b) => a.startPos.line - b.startPos.line) as position[]
+}
+
 function getDecorationConfig(config: vscode.WorkspaceConfiguration): decorationConfig {
-  const borderStyle = config.get(EnumContributes.BORDER_STYLE) as string
-  const borderWidth = config.get(EnumContributes.BORDER_WIDTH) as string
-  const defaultTheme = config.get(EnumContributes.DEFAULT_THEME) as EnumDefaultTheme
-  const decorationStyle = config.get(EnumContributes.DECORATION_STYLE) as EnumDecorationStyle
-  
+  const borderWidth: string = config.get(EnumContributes.BORDER_WIDTH, '1px')
+  const borderStyle: string = config.get(EnumContributes.BORDER_STYLE, EnumBorderStyle.SOLID)
+  const defaultTheme =
+    config.get(EnumContributes.DEFAULT_THEME, EnumDefaultTheme.RAINBOW) as EnumDefaultTheme
+  const decorationStyle =
+    config.get(EnumContributes.DECORATION_STYLE, EnumDecorationStyle.BACKGROUND) as EnumDecorationStyle
+
+  let currentTheme: regionStyle[] = []
   const isDefaultColorTheme = defaultTheme === EnumDefaultTheme.DEFAULT_COLOR
-  let currentTheme: regionStyle[]
+
   if (!isDefaultColorTheme) {
     currentTheme = defaultTheme === EnumDefaultTheme.CUSTOM_THEME
-      ? UNIT.formatThemeWrapper(config.get(EnumContributes.CUSTOM_THEME) as any)
+      ? UNIT.formatThemeWrapper(config.get(EnumContributes.CUSTOM_THEME, []))
       : UNIT.formatThemeWrapper(DEFAULT_THEMES[defaultTheme])
-  } else {
-    currentTheme = []
   }
 
   return {
     defaultTheme: currentTheme,
     decorationStyle: `${decorationStyle}Color`,
     isDefaultColorTheme: defaultTheme === EnumDefaultTheme.DEFAULT_COLOR,
-    ...(decorationStyle === EnumDecorationStyle.BORDER ? { borderStyle, borderWidth } : {})
+    ...(
+      decorationStyle === EnumDecorationStyle.BORDER
+      ? { borderStyle, borderWidth }
+      : {})
   }
 }
 
-/**
- * get the region array of successful matches,
- * and convert into a interface<position> data structure
- */
-function getMatchedRegions(
-  config: vscode.WorkspaceConfiguration,
-  document: vscode.TextDocument,
-  regexp: RegExp
-): position[] {
-  const matchResult = document.getText().matchAll(regexp)
-  let positionStacks = [...matchResult].reduce((prev: positionStack[], next: RegExpMatchArray) => {
-
-    // get the match group index of regexp match array
-    const matchIndex = next[0].includes(next[1]) ? 1 : next[0].includes(next[2]) ? 2 : 0
-
-    if (matchIndex) {
-      // get the match substring of start at the matchIndex string end index,
-      // to check whether startat ignore flag
-      const matchString = next[0].slice(next[0].indexOf(next[matchIndex]) + next[matchIndex].length).trim()
-
-      prev.push({
-        isIgnore: matchString.startsWith(config.get(EnumContributes.IGNORE_FLAG, '')),
-        startPos: document.positionAt(next.index as number),
-        endPos: null
-      })
-    } else {
-      const lastMatchPositionIndex = prev.reverse().findIndex((item) => !item.endPos)
-
-      if (lastMatchPositionIndex !== -1) {
-        prev[lastMatchPositionIndex] = {
-          ...prev[lastMatchPositionIndex],
-          endPos: document.positionAt(next.index as number)
-        }
-      }
-    }
-    return prev
-  }, [] as positionStack[])
-
-  return positionStacks
-    .filter((item: positionStack) => item.endPos)
-    .sort((a, b) => a.startPos.line - b.startPos.line) as position[]
-}
-
-/**
- * get the array of decorated region
- */
 function getDecoratedRegions(
   config: vscode.WorkspaceConfiguration,
   decorationConfig: decorationConfig,
   positions: position[]
 ) {
-  const defaultColor = config.get(EnumContributes.DEFAULT_COLOR) as string
-  const extraColorStrategy = config.get(EnumContributes.EXTRA_COLOR_STRATEGY) as EnumExtraColorStrategy
+  const defaultColor = config.get(EnumContributes.DEFAULT_COLOR, '#C9C4E930')
+  const extraColorStrategy =
+    config.get(EnumContributes.EXTRA_COLOR_STRATEGY, EnumExtraColorStrategy.CUSTOM_THEME_LAST_COLOR)
 
-  return positions.reduce((prev: decoratePosition[], next: position, index: number) => {
-    if (!next?.isIgnore) {
+  return positions.reduce(
+    (result: decoratePosition[], item: position, index: number) => {
+      if (item?.isIgnore) return result
+      
       const regionStyle = vscode.window.createTextEditorDecorationType({
         isWholeLine: true,
         [decorationConfig.decorationStyle]: UNIT.getRegionStyleColor(
@@ -163,57 +184,54 @@ function getDecoratedRegions(
           decorationConfig.isDefaultColorTheme,
           defaultColor,
           extraColorStrategy,
-          index),
-        ...(decorationConfig?.borderWidth ? { borderWidth: decorationConfig.borderWidth } : {}),
-        ...(decorationConfig?.borderStyle ? { borderStyle: decorationConfig.borderStyle } : {})
+          index
+        ),
+        ...(decorationConfig?.borderWidth
+          ? { borderWidth: decorationConfig.borderWidth }
+          : {}),
+        ...(decorationConfig?.borderStyle
+          ? { borderStyle: decorationConfig.borderStyle }
+          : {})
       })
 
-      prev.push({
+      result.push({
         style: regionStyle,
-        range: [{ range: new vscode.Range(next.startPos, next.endPos) }]
+        range: [{ range: new vscode.Range(item.startPos, item.endPos) }]
       })
-    }
-    return prev
-  }, [])
+      return result
+    }, [])
 }
 
-/**
- * reset previous render decoration
- */
-function resetDecorations() {
+function resetDecorationRegion() {
   regionStyles.forEach((item: vscode.TextEditorDecorationType) => {
     item.dispose()
   })
   regionStyles = []
 }
 
-/**
- * core logic
- */
 export function syncTriggerDecorationRegion() {
-  const editor = vscode.window.activeTextEditor
-  if (!editor) return
+  const { activeTextEditor } = vscode.window
+  if (!activeTextEditor) return
 
   // aviod region rendering overlap
-  resetDecorations()
+  resetDecorationRegion()
 
-  const { document } = editor
-  const configurations = vscode.workspace.getConfiguration(EnumContributes.PLUGIN_PREFIX)
+  const { document } = activeTextEditor
+  const configuration = vscode.workspace.getConfiguration(EnumContributes.PLUGIN_PREFIX)
 
-  const languageRegExp = getLanguageRegionRegExp(configurations, document.languageId)
-  if (!languageRegExp) return
+  const currentLanguageRegExp = getLanguageRegExp(configuration, document.languageId)
+  if (!currentLanguageRegExp) return
 
-  const regionPositions = getMatchedRegions(configurations, document, languageRegExp)
-  
-  if (regionPositions.length !== 0) {
-    const decorationConfig = getDecorationConfig(configurations)
-    const regionDecorates = getDecoratedRegions(configurations, decorationConfig, regionPositions)
+  const regionPositions = getRegionPositions(configuration, document, currentLanguageRegExp)
+  if (regionPositions.length === 0) return
 
-    // re-maintain region rendering stack
-    regionStyles = regionDecorates.map((item) => item.style)
+  const decorationConfig = getDecorationConfig(configuration)
+  const regionDecorates = getDecoratedRegions(configuration, decorationConfig, regionPositions)
 
-    regionDecorates.forEach((item) => {
-      editor.setDecorations(item.style, item.range)
-    })
-  }
+  // re-maintain region rendering stack
+  regionStyles = regionDecorates.map((item) => item.style)
+
+  regionDecorates.forEach((item) => {
+    activeTextEditor.setDecorations(item.style, item.range)
+  })
 }

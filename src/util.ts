@@ -26,14 +26,10 @@ export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
    extraStrategy: EnumExtraColorStrategy,
    index: number
   ) {
-  if (isDefaultColorTheme || !colors.length) {
-    return defaultColor
-  }
-
+  if (isDefaultColorTheme || !colors.length) return defaultColor
+  
   const lastIndex = colors.length - 1
-  if (index <= lastIndex) {
-    return colors[index]?.color ?? ''
-  }
+  if (index <= lastIndex) return colors[index]?.color ?? ''
 
   let result = null
   switch (extraStrategy) {
@@ -47,5 +43,6 @@ export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
       result = colors[lastIndex]?.color ?? ''
       break
   }
+
   return result  
 }

@@ -1,4 +1,4 @@
-import { EnumDefaultTheme, regionStyle } from "./typings"
+import { EnumDefaultTheme } from "./typings"
 
 /**
  * rgba opacity:

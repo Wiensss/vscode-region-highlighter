@@ -45,12 +45,6 @@
     "comma-dangle": [
       "error",
       "never"
-    ],
-    "array-element-newline": [
-      "error",
-      {
-        "minItems": 3
-      }
     ]
   },
   "ignorePatterns": [

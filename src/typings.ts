@@ -28,8 +28,8 @@ export enum EnumBorderStyle {
 
 export enum EnumDefaultTheme {
   RAINBOW = 'Rainbow',
-  MORANDI = 'Morandi',
   DAY3024 = 'Day3024',
+  MORANDI = 'Morandi',
   CUSTOM_THEME = 'Custom Theme',
   DEFAULT_COLOR = 'Default Color',
 }
