@@ -6,14 +6,13 @@ import {
   decoratePosition,
   decorationConfig,
   regionStyle,
-  EnumLanguage,
   EnumBorderStyle,
   EnumContributes,
   EnumDefaultTheme,
   EnumDecorationStyle,
   EnumExtraColorStrategy
 } from "./typings"
-import * as UNIT from "./util"
+import * as UTIL from "./util"
 
 let regionStyles: vscode.TextEditorDecorationType[] = []
 
@@ -21,72 +20,16 @@ function getLanguageRegExp(
   config: vscode.WorkspaceConfiguration,
   language: vscode.TextDocument["languageId"]
 ) {
-  let expression: RegExp | null
-
+  
   const allowLanguageIDs = config
-    .get(EnumContributes.ALLOW_LANGUAGE_IDS, "")
-    .split(",")
-
+  .get(EnumContributes.ALLOW_LANGUAGE_IDS, "")
+  .split(",")
+  
   // '*' flag means match all supported languageIDs
   const isEmptyLanguageIDs = allowLanguageIDs.indexOf("*") === -1 && !allowLanguageIDs.includes(language)
   if (allowLanguageIDs.length && isEmptyLanguageIDs) return null
-
-  switch (language) {
-    case EnumLanguage.BAT:
-      expression = /^[ ]*(?:::|REM)\s*(?:(#region)|#endregion).*$/gm
-      break
-    case EnumLanguage.VISUAL_BASIC:
-      expression = /^[ ]*(?:(#Region)|#End Region)(?:[^0-9a-zA-Z\n].*)*$/gm
-      break
-    case EnumLanguage.PYTHON:
-      expression =
-        /^[ ]*(?:(#\s*region)|#\s*endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
-      break
-    case EnumLanguage.PERL:
-      expression =
-        /(?:^[ ]*(#region)(?:[^0-9a-zA-Z\n].*)*$|^(=pod)$)|^[ ]*#endregion(?:[^0-9a-zA-Z\n].*)*$|^=cut$/gm
-      break
-    case EnumLanguage.JAVA:
-      expression =
-        // eslint-disable-next-line max-len
-        /^[ ]*\/\/\s*(?:(#region(?:[^0-9a-zA-Z\n].*)*|<editor-fold>(?:[^\n]*))|#endregion(?:[^0-9a-zA-Z\n].*)*|<\/editor-fold>(?:[^\n]*))$/gm
-      break
-    case EnumLanguage.C:
-    case EnumLanguage.CPP:
-      expression =
-        /^[ ]*(?:(#pragma region)|#pragma endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
-      break
-    case EnumLanguage.HTML:
-    case EnumLanguage.MARKDOWN:
-      expression =
-        /^[ ]*<!--\s*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*-->(?:.*)*$/gm
-      break
-    case EnumLanguage.CSS:
-    case EnumLanguage.LESS:
-    case EnumLanguage.SCSS:
-      expression =
-        // eslint-disable-next-line max-len
-        /^[ ]*(?:\/\*\s*(#region)(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*(#region)(?:[^0-9a-zA-Z\n].*)*|\/\*\s*#endregion(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*#endregion(?:[^0-9a-zA-Z\n].*)*)/gm
-      break
-    case EnumLanguage.PHP:
-    case EnumLanguage.CSHARP:
-    case EnumLanguage.POWERSHELL:
-    case EnumLanguage.COFFEESCRIPT:
-      expression = /^[ ]*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
-      break
-    case EnumLanguage.VUE:
-    case EnumLanguage.JREACT:
-    case EnumLanguage.TREACT:
-    case EnumLanguage.FSHARP:
-    case EnumLanguage.JAVASCRIPT:
-    case EnumLanguage.TYPESCRIPT:
-      expression = /^[ ]*\/\/\s*(?:(#region)|#endregion)(?:[ ]+\S*)*$/gm
-      break
-    default:
-      expression = null
-  }
-
-  return expression
+  
+  return UTIL.execLanguageRegExp(language)
 }
 
 function getRegionPositions(
@@ -149,8 +92,8 @@ function getDecorationConfig(config: vscode.WorkspaceConfiguration): decorationC
 
   if (!isDefaultColorTheme) {
     currentTheme = defaultTheme === EnumDefaultTheme.CUSTOM_THEME
-      ? UNIT.formatThemeWrapper(config.get(EnumContributes.CUSTOM_THEME, []))
-      : UNIT.formatThemeWrapper(DEFAULT_THEMES[defaultTheme])
+      ? UTIL.formatThemeWrapper(config.get(EnumContributes.CUSTOM_THEME, []))
+      : UTIL.formatThemeWrapper(DEFAULT_THEMES[defaultTheme])
   }
 
   return {
@@ -179,7 +122,7 @@ function getDecoratedRegions(
       
       const regionStyle = vscode.window.createTextEditorDecorationType({
         isWholeLine: true,
-        [decorationConfig.decorationStyle]: UNIT.getRegionStyleColor(
+        [decorationConfig.decorationStyle]: UTIL.getRegionStyleColor(
           decorationConfig.defaultTheme,
           decorationConfig.isDefaultColorTheme,
           defaultColor,
@@ -219,10 +162,10 @@ export function syncTriggerDecorationRegion() {
   const { document } = activeTextEditor
   const configuration = vscode.workspace.getConfiguration(EnumContributes.PLUGIN_PREFIX)
 
-  const currentLanguageRegExp = getLanguageRegExp(configuration, document.languageId)
-  if (!currentLanguageRegExp) return
+  const languageRegExp = getLanguageRegExp(configuration, document.languageId)
+  if (!languageRegExp) return
 
-  const regionPositions = getRegionPositions(configuration, document, currentLanguageRegExp)
+  const regionPositions = getRegionPositions(configuration, document, languageRegExp)
   if (regionPositions.length === 0) return
 
   const decorationConfig = getDecorationConfig(configuration)

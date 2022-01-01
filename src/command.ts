@@ -1,75 +1,13 @@
 import vscode from 'vscode'
-import {
-  delimiter,
-  EnumLanguage
-} from "./typings"
+import { delimiter, EnumCommands } from "./typings"
+import * as UTIL from "./util"
 
-function getLanguageDelimiter(language: vscode.TextDocument['languageId']) {
-  let delimiter = null
-
-  switch(language) {
-    case EnumLanguage.BAT:
-      delimiter = {
-        start: '::#region',
-        end: '::#endregion'
-      }
-      break
-    case EnumLanguage.VISUAL_BASIC:
-      delimiter = {
-        start: '#Region',
-        end: '#End Region'
-      }
-      break
-    case EnumLanguage.C:
-    case EnumLanguage.CPP:
-      delimiter = {
-        start: '#pragma region',
-        end: '#pragma endregion'
-      }
-      break
-    case EnumLanguage.CSS:
-    case EnumLanguage.LESS:
-    case EnumLanguage.SCSS:
-      delimiter = {
-        start: '/* #region */',
-        end: '/* #endregion */'
-      }
-      break
-    case EnumLanguage.PHP:
-    case EnumLanguage.PERL:
-    case EnumLanguage.CSHARP:
-    case EnumLanguage.PYTHON:
-    case EnumLanguage.POWERSHELL:
-    case EnumLanguage.COFFEESCRIPT:
-      delimiter = {
-        start: '#region',
-        end: '#endregion'
-      }
-      break
-    case EnumLanguage.VUE:
-    case EnumLanguage.JAVA:
-    case EnumLanguage.JREACT:
-    case EnumLanguage.TREACT:
-    case EnumLanguage.FSHARP:
-    case EnumLanguage.JAVASCRIPT:
-    case EnumLanguage.TYPESCRIPT:
-      delimiter = {
-        start: '// #region',
-        end: '// #endregion'
-      }
-      break
-    default:
-      delimiter = null
-  }
-
-  return delimiter
-}
-
-function injectRegionDilimiter(
+function triggerRegionDilimiter(
+  command: EnumCommands,
   editBuilder: vscode.TextEditorEdit,
   activeTextEditor: vscode.TextEditor,
-  regionDelimiter: delimiter,
-  regionName: string = ''
+  regionCondition: delimiter | RegExp,
+  regionName?: string,
 ) {
   let firstLine = undefined
   let lastLine = undefined
@@ -87,25 +25,35 @@ function injectRegionDilimiter(
   }
 
   if (firstLine && lastLine) {
-    const indextationText = document.getText(new vscode.Range(
-      firstLine.lineNumber,
-      0,
-      firstLine.lineNumber,
-      firstLine.firstNonWhitespaceCharacterIndex
-    ))
-  
-    let startRegionDelimiter = `${indextationText}${regionDelimiter.start}\n`
-    const endRegionDelimiter = `\n${indextationText}${regionDelimiter.end}`
+    if (command === EnumCommands.MARK) {
+      const indextationText = document.getText(new vscode.Range(
+        firstLine.lineNumber,
+        0,
+        firstLine.lineNumber,
+        firstLine.firstNonWhitespaceCharacterIndex
+      ))
 
-    if (regionName) {
-      startRegionDelimiter = startRegionDelimiter.replace(
-        /region/i,
-        (match) => `${match} ${regionName}`
-      )
+      let startRegionDelimiter = `${indextationText}${(regionCondition as delimiter).start}\n`
+      const endRegionDelimiter = `\n${indextationText}${(regionCondition as delimiter).end}`
+
+      if (regionName) {
+        startRegionDelimiter = startRegionDelimiter.replace(
+          /region/i,
+          (match) => `${match} ${regionName}`
+        )
+      }
+
+      editBuilder.insert(firstLine.range.start.with(undefined, 0), startRegionDelimiter)
+      editBuilder.insert(lastLine.range.end, endRegionDelimiter)
+    } else {
+      const firstMatch = firstLine.text.match(regionCondition as RegExp) ?? null
+      const lastMatch = lastLine.text.match(regionCondition as RegExp) ?? null
+
+      if (firstMatch && lastMatch) {
+        editBuilder.delete(firstLine.range)
+        editBuilder.delete(lastLine.range)
+      }
     }
-  
-    editBuilder.insert(firstLine.range.start.with(undefined, 0), startRegionDelimiter)
-    editBuilder.insert(lastLine.range.end, endRegionDelimiter)
   }
 }
 
@@ -116,7 +64,7 @@ export async function registerMarkCommand() {
   if (!activeTextEditor) return
 
   const { document } = activeTextEditor
-  const languageDelimiter = getLanguageDelimiter(document.languageId)
+  const languageDelimiter = UTIL.execLanguageDelimiter(document.languageId)
   if (!languageDelimiter) {
     vscode.window.showWarningMessage(
       `[Region Highlighter]: This file language is not supported to mark region.
@@ -126,10 +74,19 @@ export async function registerMarkCommand() {
   }
 
   activeTextEditor.edit((editBuilder) => {
-    injectRegionDilimiter(editBuilder, activeTextEditor, languageDelimiter, regionName)
+    triggerRegionDilimiter(EnumCommands.MARK, editBuilder, activeTextEditor, languageDelimiter, regionName)
   })
 }
 
 export function registerUnMarkCommand() {
-  console.log('registerUnMarkCommand')
+  const { activeTextEditor } = vscode.window
+  if (!activeTextEditor) return
+
+  const { document } = activeTextEditor
+  const languageRegExp = UTIL.execLanguageRegExp(document.languageId)
+  if (!languageRegExp) return
+
+  activeTextEditor.edit((editBuilder) => {
+    triggerRegionDilimiter(EnumCommands.UNMARK, editBuilder, activeTextEditor, languageRegExp)
+  })
 }

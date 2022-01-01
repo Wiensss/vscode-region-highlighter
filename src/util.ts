@@ -1,4 +1,9 @@
-import { regionStyle, EnumExtraColorStrategy } from "./typings"
+import {
+  delimiter,
+  regionStyle,
+  EnumLanguage,
+  EnumExtraColorStrategy
+} from "./typings"
 
 export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
   if (!theme?.length) return []
@@ -45,4 +50,96 @@ export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
   }
 
   return result  
+}
+
+export function execLanguageRegExp(language: string) {
+  switch (language) {
+    case EnumLanguage.BAT:
+      return /^[ ]*(?:::|REM)\s*(?:(#region)|#endregion).*$/gm
+    case EnumLanguage.VISUAL_BASIC:
+      return /^[ ]*(?:(#Region)|#End Region)(?:[^0-9a-zA-Z\n].*)*$/gm
+    case EnumLanguage.PYTHON:
+      return /^[ ]*(?:(#\s*region)|#\s*endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+    case EnumLanguage.PERL:
+      return /(?:^[ ]*(#region)(?:[^0-9a-zA-Z\n].*)*$|^(=pod)$)|^[ ]*#endregion(?:[^0-9a-zA-Z\n].*)*$|^=cut$/gm
+    case EnumLanguage.JAVA:
+      // eslint-disable-next-line max-len
+      return /^[ ]*\/\/\s*(?:(#region(?:[^0-9a-zA-Z\n].*)*|<editor-fold>(?:[^\n]*))|#endregion(?:[^0-9a-zA-Z\n].*)*|<\/editor-fold>(?:[^\n]*))$/gm
+    case EnumLanguage.C:
+    case EnumLanguage.CPP:
+      return /^[ ]*(?:(#pragma region)|#pragma endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+    case EnumLanguage.HTML:
+    case EnumLanguage.MARKDOWN:
+      return /^[ ]*<!--\s*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*-->(?:.*)*$/gm
+    case EnumLanguage.CSS:
+    case EnumLanguage.LESS:
+    case EnumLanguage.SCSS:
+      // eslint-disable-next-line max-len
+      return /^[ ]*(?:\/\*\s*(#region)(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*(#region)(?:[^0-9a-zA-Z\n].*)*|\/\*\s*#endregion(?:[^0-9a-zA-Z\n].*)*\*\/|\/\/\s*#endregion(?:[^0-9a-zA-Z\n].*)*)/gm
+    case EnumLanguage.PHP:
+    case EnumLanguage.CSHARP:
+    case EnumLanguage.POWERSHELL:
+    case EnumLanguage.COFFEESCRIPT:
+      return /^[ ]*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+    case EnumLanguage.VUE:
+    case EnumLanguage.JREACT:
+    case EnumLanguage.TREACT:
+    case EnumLanguage.FSHARP:
+    case EnumLanguage.JAVASCRIPT:
+    case EnumLanguage.TYPESCRIPT:
+      return /^[ ]*\/\/\s*(?:(#region)|#endregion)(?:[ ]+\S*)*$/gm
+    default:
+      return null
+  }
+}
+
+export function execLanguageDelimiter(language: string): delimiter | null {
+  switch(language) {
+    case EnumLanguage.BAT:
+      return {
+        start: '::#region',
+        end: '::#endregion'
+      }
+    case EnumLanguage.VISUAL_BASIC:
+      return {
+        start: '#Region',
+        end: '#End Region'
+      }
+    case EnumLanguage.C:
+    case EnumLanguage.CPP:
+      return {
+        start: '#pragma region',
+        end: '#pragma endregion'
+      }
+    case EnumLanguage.CSS:
+    case EnumLanguage.LESS:
+    case EnumLanguage.SCSS:
+      return {
+        start: '/* #region */',
+        end: '/* #endregion */'
+      }
+    case EnumLanguage.PHP:
+    case EnumLanguage.PERL:
+    case EnumLanguage.CSHARP:
+    case EnumLanguage.PYTHON:
+    case EnumLanguage.POWERSHELL:
+    case EnumLanguage.COFFEESCRIPT:
+      return {
+        start: '#region',
+        end: '#endregion'
+      }
+    case EnumLanguage.VUE:
+    case EnumLanguage.JAVA:
+    case EnumLanguage.JREACT:
+    case EnumLanguage.TREACT:
+    case EnumLanguage.FSHARP:
+    case EnumLanguage.JAVASCRIPT:
+    case EnumLanguage.TYPESCRIPT:
+      return {
+        start: '// #region',
+        end: '// #endregion'
+      }
+    default:
+      return null
+  }
 }
