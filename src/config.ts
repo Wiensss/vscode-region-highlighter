@@ -12,7 +12,7 @@ export const DEFAULT_THEMES = {
   [EnumDefaultTheme.RAINBOW]: [
     {
       label: 'red',
-      color: '#ff00001A'
+      color: '#FF00001A'
     },
     {
       label: 'orange',
