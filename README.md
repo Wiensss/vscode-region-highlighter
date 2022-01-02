@@ -1,71 +1,188 @@
-# region-highlighter README
+# Region Highlighter
 
-This is the README for your extension "region-highlighter". After writing up a brief description, we recommend including the following sections.
+**Region Highlighter** enhances the default region abilities of Visual Studio Code editor.
+
+Supports quick region generation or undo using commands, and provides a rich way of colorizing regions.
+
+> 🎉 Advantage: it support for all Visual Studio Code built-in region languages.
+
+---
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Command: `Region Highlighter: Mark Region`
 
-For example if there is an image subfolder under your extension project workspace:
+This command generates a region block of the selected text, passing in the optional name as the identifier:
 
-\!\[feature X\]\(images/feature-x.png\)
+![Command: Mark](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/region_mark.gif?raw=true)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### Command: `Region Highlighter: UnMark Region`
 
-## Requirements
+This command undoes a region block of the selected text.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+> Note that the selected text must contain start and end region comment statements
+
+![Command:Unark](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/region_unmark.gif?raw=true)
+
+### Ignore Flag
+
+Does not decorate current region when the first character outside the region marker matches the flag.
+
+> default falg is `!`
+
+![Ignore Flag](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/region_ignore_flag.gif?raw=true)
+
+### Built-in Themes
+
+![Built-in Theme](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/built_in_theme.png?raw=true)
+
+---
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Language support
 
-For example:
+| **Language** | **Start region** | **End region** |
+| ------------ | ---------------- | -------------- |
+| Bat | `::#region` or `REM #region` | `::#endregion` or `REM #endregion` |
+| C#/Coffeescript/PHP/PowerShell/TypeScript/JavaScript/Vue |`#region` | `#endregion` |
+| C/C++ | `#pragma region` | `#pragma endregion` |
+| CSS/Less/SCSS | `/*#region*/` | `/*#endregion*/` |
+| F# | `//#region` or `(#_region)` | `//#endregion` or  (#_endregion)|
+| Java | `//#region` or `//<editor-fold>` | `// #endregion` or `//</editor-fold>` |
+| Markdown/HTML | `<!-- #region -->` | `<!-- #endregion -->` |
+| Perl5 | `#region` or `=pod` | `#endregion` or `=cut` |
+| Python | `#region` or `# region` | `#endregion` or `# endregion` |
+| Visual Basic | `#Region` | `#End Region` |
 
-This extension contributes the following settings:
+### Configuration
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+![configuration](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/configuration.png?raw=true)
 
-## Known Issues
+#### `regionHighlighter.allowLanguageIDs`
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+IDs which this extension will work on. Identifiers have to be separated by a comma.
+
+`*` means that all the languages. eg: `javascript,typescript`.
+
+#### `regionHighlighter.ignoreFlag`
+
+Does not decorate current region when the first character outside the region marker matches the flag.
+
+#### `regionHighlighter.defaultTheme`
+
+Default region in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`.
+
+#### `regionHighlighter.defaultColor`
+
+Default region backgroundColor theme, optional:
+
+```javascript
+[
+  "Rainbow",
+  "Day3024",
+  "Morandi",
+  "Custom Theme",
+  "Default Color"
+]
+```
+
+#### `regionHighlighter.customColor`
+
+Only applies when `regionHighlighter.defaultTheme` is set to `Custom Theme`.
+
+It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`. eg:
+
+```javascript
+[
+  "#FF00001A",
+  "#FF45001A",
+  "#FFFF0026",
+  "#0000FF0D",
+  "#8000801A"
+]
+// or
+[
+  {
+    label: "red",
+    color: "FF00001A"
+  },
+  {
+    label: "orange",
+    color: "#FF45001A"
+  },
+  {
+    label: "yellow",
+    color: "#FFFF0026"
+  },
+  {
+    label: "green",
+    color: "#90EE9026"
+  },
+  {
+    label: "blue",
+    color: "#0000FF0D"
+  },
+  {
+    label: "purple",
+    color: "#8000801A"
+  }
+]
+```
+
+> the label property will be available for customizing the introverted region color in future.
+
+#### `regionHighlighter.decorationStyle`
+
+Default decoration region style, optional:
+
+```javascript
+[
+  "border",
+  "background"
+]
+```
+
+#### `regionHighlighter.borderStyle`
+
+Decorative region border style. Only applies when `regionHighlighter.decorationStyle#` is set to `border`, optional:
+
+```javascript
+[
+  "solid",
+  "dashed",
+  "dotted",
+  "double",
+  "groove"
+]
+```
+
+#### `regionHighlighter.borderWidth`
+
+Decorative region border width. Only applies when `regionHighlighter.decorationStyle#` is set to `border`.
+
+#### `regionHighlighter.extraColorStrategy`
+
+The decoration strategy chosen when the length of region blocks in the editor exceeds the preset color length, optional:
+
+```javascript
+[
+  "Default Color",
+  "Custom Theme First Color",
+  "Custom Theme Last Color"
+]
+```
+
+---
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### [1.0.0] - 2022-01-02
 
-### 1.0.0
+- first release!
 
-Initial release of ...
+---
 
-### 1.0.1
+## License
 
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[MIT](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/LICENSE)
