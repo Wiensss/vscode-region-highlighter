@@ -1,9 +1,5 @@
 # Change Log
 
-All notable changes to the "region-highlighter" extension will be documented in this file.
+## [1.0.0] - 2022-01-02
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+- first release!
