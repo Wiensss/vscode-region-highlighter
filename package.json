@@ -1,6 +1,8 @@
 {
   "name": "region-highlighter",
   "displayName": "Region Highlighter",
+  "icon": "https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/logo.png?raw=true",
+  "publisher": "Wiensss",
   "description": "decorates code inbetween regions, supoprt for custom color configurations and styles.",
   "license": "MIT",
   "version": "1.0.0",
