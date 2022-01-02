@@ -22,8 +22,8 @@ function getLanguageRegExp(
 ) {
   
   const allowLanguageIDs = config
-  .get(EnumContributes.ALLOW_LANGUAGE_IDS, "")
-  .split(",")
+    .get(EnumContributes.ALLOW_LANGUAGE_IDS, "")
+    .split(",")
   
   // '*' flag means match all supported languageIDs
   const isEmptyLanguageIDs = allowLanguageIDs.indexOf("*") === -1 && !allowLanguageIDs.includes(language)

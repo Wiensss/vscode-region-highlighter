@@ -1,8 +1,8 @@
 import * as vscode from 'vscode'
-import throttle from 'lodash.throttle'
 import { EnumCommands, EnumContributes } from './typings'
 import { syncTriggerDecorationRegion } from './core'
 import { registerMarkCommand, registerUnMarkCommand } from './command'
+import { throttle } from './util'
 
 export function activate(context: vscode.ExtensionContext) {
   const throttleWrapper = throttle(syncTriggerDecorationRegion, 500)

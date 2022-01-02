@@ -2,7 +2,7 @@ import vscode from 'vscode'
 import { delimiter, EnumCommands } from "./typings"
 import * as UTIL from "./util"
 
-function triggerRegionDilimiter(
+function triggerRegionDelimiter(
   command: EnumCommands,
   editBuilder: vscode.TextEditorEdit,
   activeTextEditor: vscode.TextEditor,
@@ -58,10 +58,10 @@ function triggerRegionDilimiter(
 }
 
 export async function registerMarkCommand() {
-  const regionName = await vscode.window.showInputBox({ prompt: '(optional)Region Name' })
-
   const { activeTextEditor } = vscode.window
   if (!activeTextEditor) return
+
+  const regionName = await vscode.window.showInputBox({ prompt: '(optional)Region Name' })
 
   const { document } = activeTextEditor
   const languageDelimiter = UTIL.execLanguageDelimiter(document.languageId)
@@ -74,7 +74,7 @@ export async function registerMarkCommand() {
   }
 
   activeTextEditor.edit((editBuilder) => {
-    triggerRegionDilimiter(EnumCommands.MARK, editBuilder, activeTextEditor, languageDelimiter, regionName)
+    triggerRegionDelimiter(EnumCommands.MARK, editBuilder, activeTextEditor, languageDelimiter, regionName)
   })
 }
 
@@ -87,6 +87,6 @@ export function registerUnMarkCommand() {
   if (!languageRegExp) return
 
   activeTextEditor.edit((editBuilder) => {
-    triggerRegionDilimiter(EnumCommands.UNMARK, editBuilder, activeTextEditor, languageRegExp)
+    triggerRegionDelimiter(EnumCommands.UNMARK, editBuilder, activeTextEditor, languageRegExp)
   })
 }

@@ -5,6 +5,32 @@ import {
   EnumExtraColorStrategy
 } from "./typings"
 
+export function throttle(fn: Function, wait: number) {
+  let lastFn: NodeJS.Timeout
+  let lastTime: number
+  let inThrottle: boolean
+
+  return function() {
+    // @ts-ignore
+    const context = this
+    const args = arguments
+
+    if (!inThrottle) {
+      fn.apply(context, args)
+      lastTime = Date.now()
+      inThrottle = true
+    } else {
+      clearTimeout(lastFn)
+      lastFn = setTimeout(function () {
+        if (Date.now() - lastTime >= wait) {
+          fn.apply(context, args)
+          lastTime = Date.now()
+        }
+      }, Math.max(wait - (Date.now() - lastTime), 0))
+    }
+  }
+}
+
 export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
   if (!theme?.length) return []
 
