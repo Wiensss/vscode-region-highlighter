@@ -2,7 +2,8 @@
   "name": "region-highlighter",
   "displayName": "Region Highlighter",
   "description": "decorates code inbetween regions, supoprt for custom color configurations and styles.",
-  "version": "0.0.1",
+  "license": "MIT",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.63.0"
   },
@@ -47,7 +48,7 @@
         "regionHighlighter.defaultColor": {
           "type": "string",
           "default": "#C9C4E930",
-          "markdownDescription": "Default region backgroundColor in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`"
+          "markdownDescription": "Default region in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`"
         },
         "regionHighlighter.decorationStyle": {
           "type": "string",
@@ -79,7 +80,7 @@
         },
         "regionHighlighter.customTheme": {
           "type": "array",
-          "markdownDescription": "Only applies when `#regionHighlighter.defaultTheme` is set to `Custom Theme`. It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`, the label property will be available for customizing the introverted region color."
+          "markdownDescription": "Only applies when `#regionHighlighter.defaultTheme` is set to `Custom Theme`. It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`, the label property will be available for customizing the introverted region color in future."
         },
         "regionHighlighter.ignoreFlag": {
           "type": "string",
