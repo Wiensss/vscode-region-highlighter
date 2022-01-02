@@ -93,7 +93,7 @@ Only applies when `regionHighlighter.defaultTheme` is set to `Custom Theme`.
 
 It support two configuration format: `Array<color>` and `Array<{label: string, color: string }>`. eg:
 
-```javascript
+```json
 [
   "#FF00001A",
   "#FF45001A",
@@ -104,28 +104,28 @@ It support two configuration format: `Array<color>` and `Array<{label: string, c
 // or
 [
   {
-    label: "red",
-    color: "FF00001A"
+    "label": "red",
+    "color": "FF00001A"
   },
   {
-    label: "orange",
-    color: "#FF45001A"
+    "label": "orange",
+    "color": "#FF45001A"
   },
   {
-    label: "yellow",
-    color: "#FFFF0026"
+    "label": "yellow",
+    "color": "#FFFF0026"
   },
   {
-    label: "green",
-    color: "#90EE9026"
+    "label": "green",
+    "color": "#90EE9026"
   },
   {
-    label: "blue",
-    color: "#0000FF0D"
+    "label": "blue",
+    "color": "#0000FF0D"
   },
   {
-    label: "purple",
-    color: "#8000801A"
+    "label": "purple",
+    "color": "#8000801A"
   }
 ]
 ```
@@ -136,7 +136,7 @@ It support two configuration format: `Array<color>` and `Array<{label: string, c
 
 Default decoration region style, optional:
 
-```javascript
+```json
 [
   "border",
   "background"
@@ -147,7 +147,7 @@ Default decoration region style, optional:
 
 Decorative region border style. Only applies when `regionHighlighter.decorationStyle#` is set to `border`, optional:
 
-```javascript
+```json
 [
   "solid",
   "dashed",
@@ -165,7 +165,7 @@ Decorative region border width. Only applies when `regionHighlighter.decorationS
 
 The decoration strategy chosen when the length of region blocks in the editor exceeds the preset color length, optional:
 
-```javascript
+```json
 [
   "Default Color",
   "Custom Theme First Color",
