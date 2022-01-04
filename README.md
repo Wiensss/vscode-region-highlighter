@@ -28,7 +28,7 @@ This command undoes a region block of the selected text.
 
 Does not decorate current region when the first character outside the region marker matches the flag.
 
-> default falg is `!`
+> default flag is `!`
 
 ![Ignore Flag](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/region_ignore_flag.gif?raw=true)
 
@@ -45,14 +45,15 @@ Does not decorate current region when the first character outside the region mar
 | **Language** | **Start region** | **End region** |
 | ------------ | ---------------- | -------------- |
 | Bat | `::#region` or `REM #region` | `::#endregion` or `REM #endregion` |
-| C#/Coffeescript/PHP/PowerShell/TypeScript/JavaScript/Vue |`#region` | `#endregion` |
+| C#/Coffeescript/PHP/PowerShell |`#region` | `#endregion` |
+| Python | `#region` or `# region` | `#endregion` or `# endregion` |
+| Vue/TypeScript/JavaScript/Rust/Golang |`// #region` | `// #endregion` |
 | C/C++ | `#pragma region` | `#pragma endregion` |
-| CSS/Less/SCSS | `/*#region*/` | `/*#endregion*/` |
-| F# | `//#region` or `(#_region)` | `//#endregion` or  (#_endregion)|
+| Css/Less/Scss | `/*#region*/` | `/*#endregion*/` |
+| F# | `//#region` or `(#_region)` | `//#endregion` or  `(#_endregion)` |
 | Java | `//#region` or `//<editor-fold>` | `// #endregion` or `//</editor-fold>` |
 | Markdown/HTML | `<!-- #region -->` | `<!-- #endregion -->` |
 | Perl5 | `#region` or `=pod` | `#endregion` or `=cut` |
-| Python | `#region` or `# region` | `#endregion` or `# endregion` |
 | Visual Basic | `#Region` | `#End Region` |
 
 ### Configuration
@@ -101,7 +102,7 @@ It support two configuration format: `Array<color>` and `Array<{label: string, c
   "#0000FF0D",
   "#8000801A"
 ]
-// or
+or
 [
   {
     "label": "red",
@@ -145,7 +146,7 @@ Default decoration region style, optional:
 
 #### `regionHighlighter.borderStyle`
 
-Decorative region border style. Only applies when `regionHighlighter.decorationStyle#` is set to `border`, optional:
+Decorative region border style. Only applies when `regionHighlighter.decorationStyle` is set to `border`, optional:
 
 ```json
 [
@@ -159,7 +160,7 @@ Decorative region border style. Only applies when `regionHighlighter.decorationS
 
 #### `regionHighlighter.borderWidth`
 
-Decorative region border width. Only applies when `regionHighlighter.decorationStyle#` is set to `border`.
+Decorative region border width. Only applies when `regionHighlighter.decorationStyle` is set to `border`.
 
 #### `regionHighlighter.extraColorStrategy`
 
