@@ -107,7 +107,9 @@ export function execLanguageRegExp(language: string) {
     case EnumLanguage.POWERSHELL:
     case EnumLanguage.COFFEESCRIPT:
       return /^[ ]*(?:(#region)|#endregion)(?:[^0-9a-zA-Z\n].*)*$/gm
+    case EnumLanguage.GO:
     case EnumLanguage.VUE:
+    case EnumLanguage.RUST:
     case EnumLanguage.JREACT:
     case EnumLanguage.TREACT:
     case EnumLanguage.FSHARP:
@@ -154,6 +156,8 @@ export function execLanguageDelimiter(language: string): delimiter | null {
         start: '#region',
         end: '#endregion'
       }
+    case EnumLanguage.GO:
+    case EnumLanguage.RUST:
     case EnumLanguage.VUE:
     case EnumLanguage.JAVA:
     case EnumLanguage.JREACT:
