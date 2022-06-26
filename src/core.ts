@@ -7,6 +7,7 @@ import {
   decorationConfig,
   regionStyle,
   EnumBorderStyle,
+  EnumRulerStyle,
   EnumContributes,
   EnumDefaultTheme,
   EnumDecorationStyle,
@@ -20,15 +21,15 @@ function getLanguageRegExp(
   config: vscode.WorkspaceConfiguration,
   language: vscode.TextDocument["languageId"]
 ) {
-  
+
   const allowLanguageIDs = config
     .get(EnumContributes.ALLOW_LANGUAGE_IDS, "")
     .split(",")
-  
+
   // '*' flag means match all supported languageIDs
   const isEmptyLanguageIDs = allowLanguageIDs.indexOf("*") === -1 && !allowLanguageIDs.includes(language)
   if (allowLanguageIDs.length && isEmptyLanguageIDs) return null
-  
+
   return UTIL.execLanguageRegExp(language)
 }
 
@@ -80,6 +81,8 @@ function getRegionPositions(
 }
 
 function getDecorationConfig(config: vscode.WorkspaceConfiguration): decorationConfig {
+  const showInRuler: boolean = config.get(EnumContributes.SHOW_IN_RULER, false)
+  const rulerStyle: string = config.get(EnumContributes.RULER_STYLE, EnumRulerStyle.FULL)
   const borderWidth: string = config.get(EnumContributes.BORDER_WIDTH, '1px')
   const borderStyle: string = config.get(EnumContributes.BORDER_STYLE, EnumBorderStyle.SOLID)
   const defaultTheme =
@@ -97,6 +100,8 @@ function getDecorationConfig(config: vscode.WorkspaceConfiguration): decorationC
   }
 
   return {
+    showInRuler: showInRuler,
+    rulerStyle: rulerStyle,
     defaultTheme: currentTheme,
     decorationStyle: `${decorationStyle}Color`,
     isDefaultColorTheme: defaultTheme === EnumDefaultTheme.DEFAULT_COLOR,
@@ -119,7 +124,7 @@ function getDecoratedRegions(
   return positions.reduce(
     (result: decoratePosition[], item: position, index: number) => {
       if (item?.isIgnore) return result
-      
+
       const regionStyle = vscode.window.createTextEditorDecorationType({
         isWholeLine: true,
         [decorationConfig.decorationStyle]: UTIL.getRegionStyleColor(
@@ -134,8 +139,12 @@ function getDecoratedRegions(
           : {}),
         ...(decorationConfig?.borderStyle
           ? { borderStyle: decorationConfig.borderStyle }
+          : {}),
+        ...(decorationConfig.showInRuler
+          ? { overviewRulerColor: decorationConfig.defaultTheme[index].color,
+            overviewRulerLane: UTIL.getMinimapStyle(decorationConfig.rulerStyle) }
           : {})
-      })
+        })
 
       result.push({
         style: regionStyle,

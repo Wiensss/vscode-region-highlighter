@@ -31,6 +31,22 @@
     "configuration": {
       "title": "Region Highlighter",
       "properties": {
+        "regionHighlighter.showInRuler": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Shows regions as decorations in ruler."
+        },
+        "regionHighlighter.rulerStyle": {
+          "type": "string",
+          "default": "full",
+          "enum": [
+            "left",
+            "center",
+            "right",
+            "full"
+          ],
+          "markdownDescription": "Decorative region ruler style. Only applies when `#regionHighlighter.showInRuler#` is set to `true`."
+        },
         "regionHighlighter.borderWidth": {
           "type": "string",
           "default": "1px",

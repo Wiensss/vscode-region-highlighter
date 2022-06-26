@@ -6,6 +6,8 @@ export enum EnumCommands {
 }
 
 export enum EnumContributes {
+  SHOW_IN_RULER = 'showInRuler',
+  RULER_STYLE = 'rulerStyle',
   IGNORE_FLAG = 'ignoreFlag',
   BORDER_WIDTH = 'borderWidth',
   BORDER_STYLE = 'borderStyle',
@@ -29,6 +31,13 @@ export enum EnumBorderStyle {
   DOTTED = 'dotted',
   DOUBLE = 'double',
   GROOVE = 'groove'
+}
+
+export enum EnumRulerStyle {
+  LEFT = 'left',
+  CENTER = 'center',
+  RIGHT = 'right',
+  FULL = 'full'
 }
 
 export enum EnumDefaultTheme {
@@ -105,6 +114,8 @@ export type regionStyle = {
 }
 
 export interface decorationConfig {
+  showInRuler: boolean
+  rulerStyle: string
   defaultTheme: regionStyle[]
   decorationStyle: string
   isDefaultColorTheme: boolean

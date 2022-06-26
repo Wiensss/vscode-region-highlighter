@@ -58,7 +58,45 @@ Does not decorate current region when the first character outside the region mar
 
 ### Configuration
 
-![configuration](https://github.com/Wiensss/vscode-region-highlighter/blob/1.0.0/assets/configuration.png?raw=true)
+```json
+{
+  "regionHighlighter.showInRuler": true,
+  "regionHighlighter.rulerStyle": "full",
+  "regionHighlighter.allowLanguageIDs": "*",
+  "regionHighlighter.ignoreFlag": "!",
+  "regionHighlighter.defaultColor": "*",
+  "regionHighlighter.defaultTheme": "Rainbow",
+  "regionHighlighter.customTheme": [],
+  "regionHighlighter.decorationStyle": "background",
+  "regionHighlighter.borderStyle": "solid",
+  "regionHighlighter.borderWidth": "1px",
+  "regionHighlighter.extraColorStrategy": "Custom Theme First Color",
+}
+```
+
+#### `regionHighlighter.showInRuler`
+
+Show regions in ruler, optional:
+
+```json
+[
+  true,
+  false
+]
+```
+
+#### `regionHighlighter.rulerStyle`
+
+Decorative region ruler style. Only applies when `regionHighlighter.showInRuler` is set to `true`, optional:
+
+```json
+[
+  "left",
+  "center",
+  "right",
+  "full"
+]
+```
 
 #### `regionHighlighter.allowLanguageIDs`
 
@@ -70,11 +108,11 @@ IDs which this extension will work on. Identifiers have to be separated by a com
 
 Does not decorate current region when the first character outside the region marker matches the flag.
 
-#### `regionHighlighter.defaultTheme`
+#### `regionHighlighter.defaultColor`
 
 Default region in CSS style, eg: `pink` / `rgb(255,192,203)` / `hsl(350deg,100%,88%)` / `#FFC2CC`.
 
-#### `regionHighlighter.defaultColor`
+#### `regionHighlighter.defaultTheme`
 
 Default region backgroundColor theme, optional:
 
@@ -88,7 +126,7 @@ Default region backgroundColor theme, optional:
 ]
 ```
 
-#### `regionHighlighter.customColor`
+#### `regionHighlighter.customTheme`
 
 Only applies when `regionHighlighter.defaultTheme` is set to `Custom Theme`.
 
@@ -178,15 +216,15 @@ The decoration strategy chosen when the length of region blocks in the editor ex
 
 ## Release Notes
 
-## [1.0.0] - 2022-01-02
-
-- first release!
-
 ## [1.0.1] - 2022-01-05
 
 - `docs`: change description of Language support
 
 - `feat`: support match language of golang and rust
+
+## [1.0.0] - 2022-01-02
+
+- first release!
 
 ---
 
