@@ -4,3 +4,5 @@ node_modules
 .vscode-test/
 *.vsix
 ./region-highlight-theme.psd
+.DS_Store
+.vscode

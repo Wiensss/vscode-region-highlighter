@@ -1,8 +1,10 @@
+import { OverviewRulerLane } from "vscode"
 import {
   delimiter,
   regionStyle,
   EnumLanguage,
-  EnumExtraColorStrategy
+  EnumExtraColorStrategy,
+  EnumRulerStyle
 } from "./typings"
 
 export function throttle(fn: Function, wait: number) {
@@ -58,7 +60,7 @@ export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
    index: number
   ) {
   if (isDefaultColorTheme || !colors.length) return defaultColor
-  
+
   const lastIndex = colors.length - 1
   if (index <= lastIndex) return colors[index]?.color ?? ''
 
@@ -75,7 +77,22 @@ export function formatThemeWrapper(theme: regionStyle[]): regionStyle[] {
       break
   }
 
-  return result  
+  return result
+}
+
+export function getMinimapStyle(style: string): OverviewRulerLane | undefined {
+  switch(style) {
+    case EnumRulerStyle.LEFT:
+      return OverviewRulerLane.Left
+    case EnumRulerStyle.CENTER:
+      return OverviewRulerLane.Center
+    case EnumRulerStyle.RIGHT:
+      return OverviewRulerLane.Right
+    case EnumRulerStyle.FULL:
+      return OverviewRulerLane.Full
+    default:
+      return undefined
+  }
 }
 
 export function execLanguageRegExp(language: string) {

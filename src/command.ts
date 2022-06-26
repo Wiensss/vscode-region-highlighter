@@ -6,7 +6,8 @@ function triggerRegionDelimiter(
   command: EnumCommands,
   editBuilder: vscode.TextEditorEdit,
   activeTextEditor: vscode.TextEditor,
-  regionCondition: delimiter | RegExp,
+  regionCondition: RegExp,
+  regionDelimter: delimiter,
   regionName?: string,
 ) {
   let firstLine = undefined
@@ -31,30 +32,66 @@ function triggerRegionDelimiter(
         0,
         firstLine.lineNumber,
         firstLine.firstNonWhitespaceCharacterIndex
-      ))
+        ))
 
-      let startRegionDelimiter = `${indextationText}${(regionCondition as delimiter).start}\n`
-      const endRegionDelimiter = `\n${indextationText}${(regionCondition as delimiter).end}`
+        let startRegionDelimiter = `${indextationText}${(regionDelimter).start}\n`
+        const endRegionDelimiter = `\n${indextationText}${(regionDelimter).end}`
 
-      if (regionName) {
-        startRegionDelimiter = startRegionDelimiter.replace(
-          /region/i,
-          (match) => `${match} ${regionName}`
-        )
+        if (regionName) {
+          startRegionDelimiter = startRegionDelimiter.replace(
+            /region/i,
+            (match) => `${match} ${regionName}`
+            )
+          }
+
+          editBuilder.insert(firstLine.range.start.with(undefined, 0), startRegionDelimiter)
+          editBuilder.insert(lastLine.range.end, endRegionDelimiter)
+    } else {
+      let firstMatch = firstLine.text.match(regionCondition) ?? null
+      let lastMatch = lastLine.text.match(regionCondition) ?? null
+      if ((firstMatch && lastMatch) && (firstLine.lineNumber != lastLine.lineNumber)) {
+        let [upRange, downRange] = getDeleteRanges(document, firstLine.range, lastLine.range)
+        editBuilder.delete(upRange)
+        editBuilder.delete(downRange)
+        return
       }
 
-      editBuilder.insert(firstLine.range.start.with(undefined, 0), startRegionDelimiter)
-      editBuilder.insert(lastLine.range.end, endRegionDelimiter)
-    } else {
-      const firstMatch = firstLine.text.match(regionCondition as RegExp) ?? null
-      const lastMatch = lastLine.text.match(regionCondition as RegExp) ?? null
+      let firstEnd = firstMatch?.[0].includes(regionDelimter.start)
+      let lastEnd = lastMatch?.[0].includes(regionDelimter.end)
+      let upNum = firstLine.lineNumber, downNum = lastLine.lineNumber
+      let nextUp = undefined, nextDown = undefined
 
-      if (firstMatch && lastMatch) {
-        editBuilder.delete(firstLine.range)
-        editBuilder.delete(lastLine.range)
+      while (!(firstEnd && lastEnd)) {
+        if (upNum < 0 || downNum === document.lineCount) return
+        if (!firstEnd) { upNum -= 1 }
+        if (!lastEnd) { downNum += 1 }
+
+        nextUp = document.lineAt(upNum); nextDown = document.lineAt(downNum)
+        firstEnd = nextUp.text.includes(regionDelimter.start); lastEnd = nextDown.text.includes(regionDelimter.end)
+      }
+
+      if ((firstEnd && nextUp) && (lastEnd && nextDown)) {
+        let [upRange, downRange] = getDeleteRanges(document, nextUp.range, nextDown.range)
+        editBuilder.delete(upRange)
+        editBuilder.delete(downRange)
       }
     }
   }
+}
+
+function getDeleteRanges(
+  document: vscode.TextDocument,
+  lUp: vscode.Range,
+  lDown: vscode.Range
+) {
+  let checkUp = (lUp.start.line-1 >= 0) ? 1 : 0, checkDown = (lDown.start.line+1 <= document.lineCount-1) ? 1 : 0
+  let lineUp = document.lineAt(lUp.start.line-checkUp).text, lineDown = document.lineAt(lDown.start.line+checkDown).text
+  let upRange = (lineUp === "")
+    ? new vscode.Range(lUp.start.line-checkUp, lUp.start.character, lUp.end.line, lUp.end.character) : lUp
+  let downRange = (lineDown === "")
+    ? new vscode.Range(lDown.start.line, lDown.start.character, lDown.end.line+checkDown, lDown.end.character) : lDown
+
+  return [upRange, downRange]
 }
 
 export async function registerMarkCommand() {
@@ -64,8 +101,9 @@ export async function registerMarkCommand() {
   const regionName = await vscode.window.showInputBox({ prompt: '(optional)Region Name' })
 
   const { document } = activeTextEditor
+  const languageRegExp = UTIL.execLanguageRegExp(document.languageId)
   const languageDelimiter = UTIL.execLanguageDelimiter(document.languageId)
-  if (!languageDelimiter) {
+  if (!languageDelimiter || !languageRegExp) {
     vscode.window.showWarningMessage(
       `[Region Highlighter]: This file language is not supported to mark region.
       visit https://code.visualstudio.com/docs/editor/codebasics#_folding for the currently supported file languags`
@@ -74,7 +112,7 @@ export async function registerMarkCommand() {
   }
 
   activeTextEditor.edit((editBuilder) => {
-    triggerRegionDelimiter(EnumCommands.MARK, editBuilder, activeTextEditor, languageDelimiter, regionName)
+    triggerRegionDelimiter( EnumCommands.MARK,editBuilder,activeTextEditor,languageRegExp,languageDelimiter,regionName)
   })
 }
 
@@ -84,9 +122,10 @@ export function registerUnMarkCommand() {
 
   const { document } = activeTextEditor
   const languageRegExp = UTIL.execLanguageRegExp(document.languageId)
-  if (!languageRegExp) return
+  const languageDelimiter = UTIL.execLanguageDelimiter(document.languageId)
+  if (!languageRegExp || !languageDelimiter) return
 
   activeTextEditor.edit((editBuilder) => {
-    triggerRegionDelimiter(EnumCommands.UNMARK, editBuilder, activeTextEditor, languageRegExp)
+    triggerRegionDelimiter(EnumCommands.UNMARK, editBuilder, activeTextEditor, languageRegExp, languageDelimiter)
   })
 }
