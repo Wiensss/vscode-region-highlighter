@@ -75,6 +75,8 @@ export enum EnumLanguage {
   TYPESCRIPT = 'typescript',
   VISUAL_BASIC = 'vb',
   COFFEESCRIPT = 'coffeescript',
+  LUA = 'lua',
+  LUAU = 'luau',
 }
 
 export type delimiter = {

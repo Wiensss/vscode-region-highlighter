@@ -28,6 +28,12 @@ true
 // #region 符号
 // #endregion
 
+true
+{
+	// #region Tab indentation
+	// #endregion
+}
+
 false
 // #regions
 // #endregion sd

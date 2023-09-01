@@ -5,7 +5,7 @@
   "publisher": "Wiensss",
   "icon": "assets/logo.png",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "https://github.com/Wiensss/vscode-region-highlighter",
   "engines": {
     "vscode": "^1.63.0"
