@@ -55,6 +55,7 @@ Does not decorate current region when the first character outside the region mar
 | Markdown/HTML | `<!-- #region -->` | `<!-- #endregion -->` |
 | Perl5 | `#region` or `=pod` | `#endregion` or `=cut` |
 | Visual Basic | `#Region` | `#End Region` |
+| Lua | `#region` | `#endregion` |
 
 ### Configuration
 
@@ -178,15 +179,21 @@ The decoration strategy chosen when the length of region blocks in the editor ex
 
 ## Release Notes
 
-## [1.0.0] - 2022-01-02
+## [1.0.2] - 2023-09-01
 
-- first release!
+- `feat`: support indentation of region block
+
+- `feat`: Lua language support
 
 ## [1.0.1] - 2022-01-05
 
 - `docs`: change description of Language support
 
 - `feat`: support match language of golang and rust
+
+## [1.0.0] - 2022-01-02
+
+- first release!
 
 ---
 
